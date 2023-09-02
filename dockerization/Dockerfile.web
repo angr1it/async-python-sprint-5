@@ -1,0 +1,7 @@
+FROM nginx:alpine
+
+COPY ./services/nginx.conf /etc/nginx/nginx.conf
+COPY  ./services/site.conf /etc/nginx/conf.d/site.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

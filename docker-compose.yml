@@ -1,0 +1,102 @@
+version: '3'
+
+services:
+
+  keepl:
+    container_name: keepl
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: ./dockerization/Dockerfile.keepl
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+      - db
+    networks:
+      - keepl_net
+
+  web:
+    container_name: web
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: ./dockerization/Dockerfile.web
+    ports:
+    - "80:80"
+    depends_on:
+      - keepl
+    networks:
+      - keepl_net
+
+  redis:
+    container_name: redis
+    profiles: ["dev", "test"]
+    image: redis:latest
+    command: redis-server --requirepass $REDIS_REQUIREDPASS --port $REDIS_PORT --appendonly yes
+    volumes:
+    - ./services/redis.conf:/usr/local/etc/redis/redis.conf
+    - redis:/var/lib/redis/data
+    networks:
+      - keepl_net
+    expose:
+      - "${REDIS_PORT}"
+
+  db:
+    container_name: db
+    profiles: ["dev"]
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - LC_ALL=C.UTF-8
+      - POSTGRES_DB=${DB_NAME}
+      - PGPORT=${DB_PORT}
+      - POSTGRES_PORT=${DB_PORT}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    networks:
+      - keepl_net
+  
+  db_test:
+    container_name: db_test
+    profiles: ["test"]
+    image: postgres:15-alpine
+    volumes:
+      - test_postgres_data:/var/lib/postgresql/data/
+    environment:
+      - LC_ALL=C.UTF-8
+      - POSTGRES_DB=${DB_TEST_NAME}
+      - PGPORT=${DB_TEST_PORT}
+      - POSTGRES_PORT=${DB_TEST_PORT}
+      - POSTGRES_USER=${DB_TEST_USER}
+      - POSTGRES_PASSWORD=${DB_TEST_PASS}
+    networks:
+      - keepl_net
+
+  test:
+    profiles: ["test"]
+    build:
+      context: .
+      dockerfile: ./dockerization/Dockerfile.test
+    volumes:
+      - .:/code
+    stdin_open: true
+    depends_on:
+      - db_test
+      - redis
+    networks:
+      - keepl_net
+
+networks:
+  keepl_net:
+    driver: bridge
+
+volumes:
+  redis:
+  postgres_data:
+  test_postgres_data:

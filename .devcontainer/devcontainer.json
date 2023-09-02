@@ -1,0 +1,29 @@
+{
+	"name": "keepl",
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	  ], 
+	"service": "keepl",
+	"runServices": ["keepl", "web", "db", "redis", "db_test"],
+    
+	"workspaceFolder": "/code",
+	"customizations": {
+        "vscode": {
+            "settings": { 
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "/bin/bash"
+                    }
+                }
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-azuretools.vscode-docker",
+                "ms-python.flake8",
+                "ms-python.black-formatter",
+                "cweijan.vscode-database-client2"
+            ]
+        }
+    }
+}
