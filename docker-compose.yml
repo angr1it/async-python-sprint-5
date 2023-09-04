@@ -8,8 +8,6 @@ services:
     build:
       context: .
       dockerfile: ./dockerization/Dockerfile.keepl
-    ports:
-      - "8000:8000"
     expose:
       - "8000"
     volumes:

@@ -1,5 +1,5 @@
 from typing import Generic, TypeVar
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,20 +8,10 @@ from models import Base
 
 
 class Repository(ABC):
-    def get(self, *args, **kwargs):
-        raise NotImplementedError
 
-    def get_multi(self, *args, **kwargs):
-        raise NotImplementedError
-
+    @abstractmethod
     def create(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def update(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def delete(self, *args, **kwargs):
-        raise NotImplementedError
+        pass
 
 
 ModelType = TypeVar("ModelType", bound=Base)

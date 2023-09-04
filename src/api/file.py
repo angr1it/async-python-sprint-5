@@ -65,7 +65,7 @@ async def upload_file(
 @file_router.get("/download")
 async def download_file(
     file_id: Annotated[Union[str, None], Query(max_length=128)] = None,
-    file_path: Annotated[Union[FilePath, None], Query()] = None,
+    file_path: Annotated[Union[str, None], Query()] = None,
     db: AsyncSession = Depends(get_db_async),
     user: User = Depends(current_user)
 ):
