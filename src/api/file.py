@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Annotated, Union
+from typing import Annotated, Union
 from typing_extensions import Annotated
 
 from fastapi import APIRouter, Depends, UploadFile, HTTPException, Query

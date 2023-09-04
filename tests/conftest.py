@@ -7,7 +7,6 @@ from sqlalchemy.pool import NullPool
 from sqlalchemy.orm import sessionmaker
 
 import pytest
-import pytest_asyncio
 from httpx import AsyncClient
 
 from config.db import get_async_session
@@ -35,13 +34,13 @@ app.dependency_overrides[get_async_session] = override_get_async_session
 
 
 @pytest.fixture(scope="session")
-def event_loop(request):
+def event_loop():
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
 
 
-@pytest_asyncio.fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope="session")
 async def prepare_database():
     async with engine_test.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
@@ -57,7 +56,7 @@ def anyio_backend():
     return "asyncio"
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest.fixture(scope="session")
 async def client():
     async with AsyncClient(app=app, base_url="http://test") as client:
         yield client
