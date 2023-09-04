@@ -4,6 +4,7 @@ from datetime import datetime
 
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
 from sqlalchemy import Column, String, DateTime, Boolean, UUID
+from sqlalchemy.orm import relationship
 
 from models import Base
 from models.settings import MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH
@@ -19,3 +20,5 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     is_active: bool = Column(Boolean, default=True, nullable=False)
     is_superuser: bool = Column(Boolean, default=False, nullable=False)
     is_verified: bool = Column(Boolean, default=False, nullable=False)
+
+    file = relationship("File", back_populates="user", passive_deletes=True)

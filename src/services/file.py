@@ -42,7 +42,8 @@ class RebositoryDBFile(RepositoryDB[FileModel, FileCreate]):
             directory = ""
 
         path = Path(directory, filename)
-        full_path = Path(FILESTORE_ROOT, str(user.id), path)
+        temp = FILESTORE_ROOT + "/" + str(user.id) + str(path)
+        full_path = Path(temp)
 
         await self.__write_file(full_path, file)
 

@@ -3,6 +3,7 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import Column, String, DateTime, Boolean, UUID, Integer, ForeignKey
+from sqlalchemy.orm import relationship
 
 from models import Base
 from models.settings import MAX_USERNAME_LENGTH, MAX_PATH_LENGTH
@@ -17,5 +18,7 @@ class File(Base):
     real_path: str = Column(String(MAX_PATH_LENGTH), nullable=False)
     size: int = Column(Integer)
     is_downloadable: bool = Column(Boolean, default=True, nullable=False)
-    creator_id = Column(UUID, ForeignKey("user.id"), nullable=True)
+    creator_id = Column(UUID, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
     deleted = Column("deleted", Boolean, default=False)
+
+    user = relationship("User", back_populates="file")

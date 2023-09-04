@@ -1,7 +1,8 @@
-from typing import Optional
 import os
+from typing import Optional, Annotated, Union
+from typing_extensions import Annotated
 
-from fastapi import APIRouter, Depends, UploadFile, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import FilePath, DirectoryPath
 from fastapi.responses import FileResponse
@@ -18,8 +19,8 @@ file_router = APIRouter()
 
 @file_router.get("/")
 async def show_files(
-    limit: Optional[int] = None,
-    offset: Optional[int] = 0,
+    limit: Annotated[int, Query(description='Pagination page size', ge=1)] = 10,
+    offset: Annotated[int, Query(description='Pagination page offset', ge=0)] = 0,
     db: AsyncSession = Depends(get_db_async),
     user: User = Depends(current_user)
 ):
@@ -37,8 +38,8 @@ async def show_files(
 @file_router.post("/upload", response_model=FileRead)
 async def upload_file(
     file: UploadFile,
-    file_path: Optional[FilePath] = None,
-    directory_path: Optional[DirectoryPath] = None,
+    file_path: Annotated[Union[FilePath, None], Query()] = None,
+    directory_path: Annotated[Union[DirectoryPath, None], Query()] = None,
     db: AsyncSession = Depends(get_db_async),
     user: User = Depends(current_user)
 ):
@@ -63,8 +64,8 @@ async def upload_file(
 
 @file_router.get("/download")
 async def download_file(
-    file_id: Optional[str] = None,
-    file_path: Optional[str] = None,
+    file_id: Annotated[Union[str, None], Query(max_length=128)] = None,
+    file_path: Annotated[Union[FilePath, None], Query()] = None,
     db: AsyncSession = Depends(get_db_async),
     user: User = Depends(current_user)
 ):

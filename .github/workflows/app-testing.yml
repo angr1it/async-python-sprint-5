@@ -34,7 +34,7 @@ jobs:
         # exit-zero treats all errors as warnings
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=119 --statistics --config=setup.cfg
     - name: 'Create env file'
-      run: |
+      run: |   
         echo "${{ secrets.ENV_FILE }}" > .env
     - name: Docker build
       run: |
